@@ -51,4 +51,28 @@ public class fileChunking {
      return response;
     }
 
+	@AuraEnabled(cacheable=true)
+	public static BlobFromUrlWrapper getBloblFromImageUrlNoChunk(String imageUrl){
+        //create wrapper for Blob part
+        String BlobPart = '';
+        BlobFromUrlWrapper response = new BlobFromUrlWrapper();
+
+        //create request
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(imageUrl);
+     	req.setMethod('GET');
+
+        //send GET request
+     	Http http = new Http();
+     	HTTPResponse res = http.send(req);
+
+		//process response as a blob and encode to base64 for wrapper
+     	blob image = res.getBodyAsBlob();
+     	BlobPart = (EncodingUtil.base64Encode(image));
+
+
+     response.blobPart = BlobPart;
+     return response;
+    }
+
 }
